@@ -6,7 +6,7 @@ import ca.uqac.inf957.chess.agent.Player;
 
 public aspect MoveValidator {
 
-    pointcut moveAttempt(Player player, Move mv): call(* Player.move(Move)) && target(player) && args(mv);
+    pointcut moveAttempt(Player player, Move mv): call(boolean Player.move(Move)) && target(player) && args(mv);
 
     boolean around(Player player, Move mv): moveAttempt(player, mv){
         boolean res = IsMoveInBounds(mv) && IsMovingNull(mv, player) && IsMovingOwnPiece(mv, player)
@@ -29,10 +29,10 @@ public aspect MoveValidator {
     }
 
     private boolean IsMovingNull(Move mv, Player player) {
-        return !(player.getPlayGround().getGrid()[mv.xI][mv.yI].getPiece() == null);
+        return (player.getPlayGround().getGrid()[mv.xI][mv.yI].isOccupied());
     }
 
     private boolean IsMovePieceLegal(Move mv, Player player) {
-        return (player.getPlayGround().getGrid()[mv.xI][mv.yI].getPiece().isMoveLegal(mv));
+        return (player.getPlayGround().getGrid()[mv.xI][mv.yI].getPiece().isMoveLegal(mv, player.getPlayGround()));
     }
 }
